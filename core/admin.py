@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from core.models import Comentario, Tarefa, User
+from core.models import Comentario, Tarefa, User, Projeto
 
 
 @admin.register(User)
@@ -183,4 +183,12 @@ class ComentarioAdmin(admin.ModelAdmin):
     search_fields = ('user', 'tarefa',)
     list_filter = ('user', 'tarefa')
     ordering = ('user', 'tarefa',)
+    list_per_page = 10
+
+@admin.register(Projeto)
+class ProjetoAdmin(admin.ModelAdmin):
+    list_display = ('nome',)
+    search_fields = ('nome',)
+    list_filter = ('nome',)
+    ordering = ('nome',)
     list_per_page = 10

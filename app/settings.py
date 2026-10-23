@@ -52,14 +52,18 @@ CSRF_TRUSTED_ORIGINS = FRONTEND_URLS
 CORS_ALLOW_CREDENTIALS = True
 
 # ============================================================
-# Configuração OAuth do Google
+# Configuração OAuth do Google (allauth)
 # ============================================================
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        
-        'CLIENT_ID': GOOGLE_CLIENT_ID,
-        'CLIENT_SECRET': GOOGLE_CLIENT_SECRET,
+        'APP': {
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_CLIENT_SECRET,
+            'key': '',
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
     }
 }
 
@@ -67,10 +71,17 @@ SOCIALACCOUNT_PROVIDERS = {
 # Configurações do Allauth
 # ============================================================
 
-ACCOUNT_USER_MODEL_USERNAME_field = None
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+SITE_ID = 1
+
+# O model User não tem campo "username": login por e-mail
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email'
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+
+# Login social: usa o e-mail verificado pelo Google
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -89,6 +100,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # Terceiros
     'corsheaders',
@@ -350,5 +362,8 @@ print()
 
 print(f'CLOUDINARY...............: {"SIM" if CLOUDINARY_URL else "NÃO"}')
 print(f'GOOGLE_CLIENT_ID.........: {"DEFINIDO" if GOOGLE_CLIENT_ID else "NÃO DEFINIDO"}')
+print(f'GOOGLE_CLIENT_SECRET.....: {"DEFINIDO" if GOOGLE_CLIENT_SECRET else "NÃO DEFINIDO"}')
+print(f'RESEND_API_KEY...........: {"DEFINIDA" if os.getenv("RESEND_API_KEY") else "NÃO DEFINIDA"}')
+print(f'EMAIL_BACKEND............: {EMAIL_BACKEND}')
 
 print('=' * 70)

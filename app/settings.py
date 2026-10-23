@@ -33,7 +33,7 @@ FRONTEND_URLS = [
     url.strip()
     for url in os.getenv(
         'FRONTEND_URLS',
-        'http://localhost:5173,http://127.0.0.1:5173'
+        'http://localhost:5173,http://127.0.0.1:5173',
     ).split(',')
     if url.strip()
 ]
@@ -43,6 +43,46 @@ CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 CORS_ALLOWED_ORIGINS = FRONTEND_URLS
 CSRF_TRUSTED_ORIGINS = FRONTEND_URLS
 CORS_ALLOW_CREDENTIALS = True
+
+# ============================================================
+# Configurações de e-mail
+# ============================================================
+
+# Em desenvolvimento, imprime os e-mails no terminal.
+# Em produção, utiliza SMTP por padrão.
+# A variável EMAIL_BACKEND pode sobrescrever essa configuração.
+
+EMAIL_BACKEND = os.getenv(
+    'EMAIL_BACKEND',
+    (
+        'django.core.mail.backends.console.EmailBackend'
+        if DEBUG
+        else 'django.core.mail.backends.smtp.EmailBackend'
+    ),
+)
+
+EMAIL_HOST = os.getenv('EMAIL_HOST', '')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+
+EMAIL_USE_TLS = os.getenv(
+    'EMAIL_USE_TLS',
+    'True',
+).lower() in {'1', 'true', 'yes', 'on'}
+
+EMAIL_USE_SSL = os.getenv(
+    'EMAIL_USE_SSL',
+    'False',
+).lower() in {'1', 'true', 'yes', 'on'}
+
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+
+DEFAULT_FROM_EMAIL = os.getenv(
+    'DEFAULT_FROM_EMAIL',
+    EMAIL_HOST_USER or 'noreply@localhost',
+)
+
+EMAIL_TIMEOUT = int(os.getenv('EMAIL_TIMEOUT', '20'))
 
 # ============================================================
 # Aplicações instaladas
@@ -64,6 +104,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # Aplicações do projeto
+    'uploader',
     'core',
 ]
 
@@ -128,16 +169,28 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        ),
     },
 ]
 
@@ -155,6 +208,7 @@ USE_TZ = True
 # ============================================================
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # ============================================================
 # Arquivos enviados pelos usuários
@@ -164,32 +218,32 @@ MEDIA_ENDPOINT = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 FILE_UPLOAD_PERMISSIONS = 0o640
 
-# Durante o desenvolvimento o frontend precisa acessar
-# diretamente o servidor Django.
-
+# Endereço utilizado durante o desenvolvimento.
 MEDIA_URL = 'http://127.0.0.1:8000/media/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # ============================================================
 # Cloudinary (opcional)
 # ============================================================
 
 if CLOUDINARY_URL:
-    # Em produção, os arquivos enviados ficam armazenados
-    # no Cloudinary.
-
     INSTALLED_APPS += [
         'cloudinary',
         'cloudinary_storage',
     ]
 
     MEDIA_URL = '/media/'
+
     STORAGES = {
         'default': {
-            'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+            'BACKEND': (
+                'cloudinary_storage.storage.MediaCloudinaryStorage'
+            ),
         },
         'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+            'BACKEND': (
+                'whitenoise.storage.'
+                'CompressedManifestStaticFilesStorage'
+            ),
         },
     }
 
@@ -218,11 +272,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ),
 
-    'DEFAULT_SCHEMA_CLASS':
-        'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS': (
+        'drf_spectacular.openapi.AutoSchema'
+    ),
 
-    'DEFAULT_PAGINATION_CLASS':
-        'app.pagination.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS': (
+        'app.pagination.CustomPagination'
+    ),
 
     'PAGE_SIZE': 10,
 }
@@ -248,37 +304,31 @@ SIMPLE_JWT = {
 }
 
 # ============================================================
-# Informações de configuração (debug)
+# Informações básicas da configuração
 # ============================================================
 
 print('=' * 70)
 print('CONFIGURAÇÃO DA APLICAÇÃO')
 print('=' * 70)
 
-print(f'DEBUG....................: {DEBUG if DEBUG else "NÃO DEFINIDO"}')
-print(f'SECRET_KEY...............: {SECRET_KEY if SECRET_KEY else "NÃO DEFINIDA"}')
-
-print()
-
-print(f'DATABASE ENGINE.............: {DATABASES["default"]["ENGINE"]}')
-print(f'DATABASE NAME...............: {DATABASES["default"]["NAME"]}')
+print(f'DEBUG....................: {DEBUG}')
+print(f'DATABASE ENGINE..........: {DATABASES["default"]["ENGINE"]}')
+print(f'DATABASE NAME............: {DATABASES["default"]["NAME"]}')
 
 print()
 
 print(f'FRONTEND_URLS ({len(FRONTEND_URLS)}).......: {FRONTEND_URLS}')
-print(f'CORS_ALLOWED_ORIGINS....: {CORS_ALLOWED_ORIGINS}')
-print(f'CSRF_TRUSTED_ORIGINS....: {CSRF_TRUSTED_ORIGINS}')
+print(f'CORS_ALLOWED_ORIGINS......: {CORS_ALLOWED_ORIGINS}')
+print(f'CSRF_TRUSTED_ORIGINS......: {CSRF_TRUSTED_ORIGINS}')
 
 print()
 
-print(f'MEDIA_URL...............: {MEDIA_URL}')
-print(f'MEDIA_ROOT..............: {MEDIA_ROOT}')
+print(f'MEDIA_URL.................: {MEDIA_URL}')
+print(f'MEDIA_ROOT................: {MEDIA_ROOT}')
+print(f'CLOUDINARY................: {"SIM" if CLOUDINARY_URL else "NÃO"}')
 
 print()
 
-print(f'CLOUDINARY..............: {"SIM" if CLOUDINARY_URL else "NÃO"}')
-
-if CLOUDINARY_URL:
-    print(f'CLOUDINARY_URL..........: {CLOUDINARY_URL}')
+print(f'EMAIL_BACKEND.............: {EMAIL_BACKEND}')
 
 print('=' * 70)

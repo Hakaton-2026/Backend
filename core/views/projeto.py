@@ -1,9 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 
 from core.models import Projeto
-from core.serializers import ProjetoSerializer
+from core.serializers import ProjetoCreateUpdateSerializer, ProjetoListSerializer, ProjetoRetrieveSerializer
 
 
 class ProjetoViewSet(ModelViewSet):
     queryset = Projeto.objects.all()
-    serializer_class = ProjetoSerializer
+
+    def get_serializer_class(self):
+        if self.action in {'create', 'update', 'self.partial_update'}:
+            return ProjetoCreateUpdateSerializer
+        if self.action == 'list':
+            return ProjetoListSerializer
+        return ProjetoRetrieveSerializer

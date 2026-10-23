@@ -7,15 +7,26 @@ class Tarefa(models.Model):
     titulo = models.CharField(max_length=45)
     descricao = models.CharField(max_length=200, null=True, blank=True)
 
-    class TipoPrioridade(models.IntegerChoices):
+    class TipoSituacao(models.IntegerChoices):
         A_FAZER = 1, 'A fazer'
         EM_ANDAMENTO = 2, 'Em andamento'
         CONCLUIDO = 3, 'Concluído'
 
+    situacao = models.IntegerField(
+        choices=TipoSituacao.choices,
+        default=TipoSituacao.A_FAZER
+    )
+    class TipoPrioridade(models.IntegerChoices):
+        BAIXA = 1, 'Baixa',
+        MEDIA = 2, 'Média',
+        ALTA = 3, 'Alta',
+        URGENTE = 4, 'Urgente'
+
     prioridade = models.IntegerField(
         choices=TipoPrioridade.choices,
-        default=TipoPrioridade.A_FAZER
+        default=TipoPrioridade.BAIXA
     )
+
     prazoInicio = models.DateField()
     prazoFim = models.DateField()
     texto = models.CharField(max_length=500, null=True, blank=True)

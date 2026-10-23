@@ -26,6 +26,13 @@ DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 ALLOWED_HOSTS = ['*']
 
 # ============================================================
+# Google OAuth
+# ============================================================
+
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+
+# ============================================================
 # Frontend autorizado
 # ============================================================
 
@@ -45,10 +52,37 @@ CSRF_TRUSTED_ORIGINS = FRONTEND_URLS
 CORS_ALLOW_CREDENTIALS = True
 
 # ============================================================
+# Configuração OAuth do Google
+# ============================================================
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        
+        'CLIENT_ID': GOOGLE_CLIENT_ID,
+        'CLIENT_SECRET': GOOGLE_CLIENT_SECRET,
+    }
+}
+
+# ============================================================
+# Configurações do Allauth
+# ============================================================
+
+ACCOUNT_USER_MODEL_USERNAME_field = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# ============================================================
 # Aplicações instaladas
 # ============================================================
 
 INSTALLED_APPS = [
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,10 +92,16 @@ INSTALLED_APPS = [
 
     # Terceiros
     'corsheaders',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'django_extensions',
     'django_filters',
     'drf_spectacular',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'anymail',
 
     # Aplicações do projeto
     'core',
@@ -79,6 +119,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -128,16 +169,28 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        ),
     },
 ]
 
@@ -155,6 +208,7 @@ USE_TZ = True
 # ============================================================
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # ============================================================
 # Arquivos enviados pelos usuários
@@ -162,34 +216,33 @@ STATIC_URL = '/static/'
 
 MEDIA_ENDPOINT = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-FILE_UPLOAD_PERMISSIONS = 0o640
-
-# Durante o desenvolvimento o frontend precisa acessar
-# diretamente o servidor Django.
-
 MEDIA_URL = 'http://127.0.0.1:8000/media/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+FILE_UPLOAD_PERMISSIONS = 0o640
 
 # ============================================================
 # Cloudinary (opcional)
 # ============================================================
 
 if CLOUDINARY_URL:
-    # Em produção, os arquivos enviados ficam armazenados
-    # no Cloudinary.
-
     INSTALLED_APPS += [
         'cloudinary',
         'cloudinary_storage',
     ]
 
     MEDIA_URL = '/media/'
+
     STORAGES = {
         'default': {
-            'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+            'BACKEND': (
+                'cloudinary_storage.storage.MediaCloudinaryStorage'
+            ),
         },
         'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+            'BACKEND': (
+                'whitenoise.storage.'
+                'CompressedManifestStaticFilesStorage'
+            ),
         },
     }
 
@@ -218,11 +271,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ),
 
-    'DEFAULT_SCHEMA_CLASS':
-        'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS': (
+        'drf_spectacular.openapi.AutoSchema'
+    ),
 
-    'DEFAULT_PAGINATION_CLASS':
-        'app.pagination.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS': (
+        'app.pagination.CustomPagination'
+    ),
 
     'PAGE_SIZE': 10,
 }
@@ -243,9 +298,26 @@ SPECTACULAR_SETTINGS = {
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# ============================================================
+# E-mails com Resend
+# ============================================================
+
+ANYMAIL = {
+    'RESEND_API_KEY': os.getenv('RESEND_API_KEY'),
+}
+
+EMAIL_BACKEND = 'anymail.backends.resend.EmailBackend'
+DEFAULT_FROM_EMAIL = 'Meu Kanban <onboarding@resend.dev>'
+
+# Para imprimir os e-mails no terminal durante o desenvolvimento,
+# descomente o bloco abaixo:
+
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ============================================================
 # Informações de configuração (debug)
@@ -253,32 +325,30 @@ SIMPLE_JWT = {
 
 print('=' * 70)
 print('CONFIGURAÇÃO DA APLICAÇÃO')
-print('=' * 70)
 
-print(f'DEBUG....................: {DEBUG if DEBUG else "NÃO DEFINIDO"}')
-print(f'SECRET_KEY...............: {SECRET_KEY if SECRET_KEY else "NÃO DEFINIDA"}')
+print(f'DEBUG....................: {DEBUG}')
+print(f'SECRET_KEY...............: {"DEFINIDA" if SECRET_KEY else "NÃO DEFINIDA"}')
 
 print()
 
-print(f'DATABASE ENGINE.............: {DATABASES["default"]["ENGINE"]}')
-print(f'DATABASE NAME...............: {DATABASES["default"]["NAME"]}')
+print(f'DATABASE ENGINE..........: {DATABASES["default"]["ENGINE"]}')
+print(f'DATABASE NAME............: {DATABASES["default"]["NAME"]}')
 
 print()
 
 print(f'FRONTEND_URLS ({len(FRONTEND_URLS)}).......: {FRONTEND_URLS}')
-print(f'CORS_ALLOWED_ORIGINS....: {CORS_ALLOWED_ORIGINS}')
-print(f'CSRF_TRUSTED_ORIGINS....: {CSRF_TRUSTED_ORIGINS}')
+print(f'CORS_ALLOWED_ORIGINS.....: {CORS_ALLOWED_ORIGINS}')
+print(f'CSRF_TRUSTED_ORIGINS.....: {CSRF_TRUSTED_ORIGINS}')
 
 print()
 
-print(f'MEDIA_URL...............: {MEDIA_URL}')
-print(f'MEDIA_ROOT..............: {MEDIA_ROOT}')
+print(f'MEDIA_URL................: {MEDIA_URL}')
+print(f'MEDIA_ROOT...............: {MEDIA_ROOT}')
+print(f'STATIC_ROOT..............: {STATIC_ROOT}')
 
 print()
 
-print(f'CLOUDINARY..............: {"SIM" if CLOUDINARY_URL else "NÃO"}')
-
-if CLOUDINARY_URL:
-    print(f'CLOUDINARY_URL..........: {CLOUDINARY_URL}')
+print(f'CLOUDINARY...............: {"SIM" if CLOUDINARY_URL else "NÃO"}')
+print(f'GOOGLE_CLIENT_ID.........: {"DEFINIDO" if GOOGLE_CLIENT_ID else "NÃO DEFINIDO"}')
 
 print('=' * 70)

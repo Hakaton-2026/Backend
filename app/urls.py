@@ -38,6 +38,8 @@ urlpatterns = [
     path('api/token/verify/', CustomTokenVerifyView.as_view(), name='token_verify'),
     # Registro de usuários
     path('api/registro/', UserRegistrationView.as_view(), name='user_registration'),
+    # Allauth (login social, Google, etc.)
+    path('accounts/', include('allauth.urls')),
     # API
     path('api/', include(router.urls)),
 ]

@@ -1,55 +1,52 @@
-"""
-Django admin customization.
-"""
-
+from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import Group
+from django.contrib.sites.models import Site
 
-from core import models
+from core.models import User
 
 
+@admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    """Define the admin pages for users."""
+    list_display = ('email', 'name', 'is_active', 'is_staff')
+    list_filter = ('is_active', 'is_staff', 'is_superuser')
+    search_fields = ('email', 'name')
+    ordering = ('email',)
 
-    ordering = ('id',)
-    list_display = ('email', 'name')
-    search_fields = ('email', 'name', 'groups__name')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal Info'), {'fields': ('name',)}),
+        ('Informações pessoais', {'fields': ('name',)}),
         (
-            _('Permissions'),
+            'Permissões',
             {
                 'fields': (
                     'is_active',
                     'is_staff',
                     'is_superuser',
+                    'groups',
+                    'user_permissions',
                 )
             },
         ),
-        (_('Important dates'), {'fields': ('last_login',)}),
-        (_('Groups'), {'fields': ('groups',)}),
-        (_('User Permissions'), {'fields': ('user_permissions',)}),
+        ('Datas importantes', {'fields': ('last_login',)}),
     )
-    readonly_fields = ['last_login']
+
     add_fieldsets = (
         (
             None,
             {
                 'classes': ('wide',),
-                'fields': (
-                    'email',
-                    'password1',
-                    'password2',
-                    'name',
-                    'is_active',
-                    'is_staff',
-                    'is_superuser',
-                ),
+                'fields': ('email', 'name', 'password1', 'password2', 'is_staff', 'is_superuser'),
             },
         ),
     )
 
 
-admin.site.register(models.User, UserAdmin)
+# Esconde do admin tudo que não seja Usuários
+for model in (Group, Site, EmailAddress, SocialAccount, SocialApp, SocialToken):
+    try:
+        admin.site.unregister(model)
+    except admin.sites.NotRegistered:
+        pass

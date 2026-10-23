@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from core.models import Tarefa, User
+from core.models import Comentario, Tarefa, User
 
 
 @admin.register(User)
@@ -174,4 +174,13 @@ class TarefasAdmin(admin.ModelAdmin):
     search_fields = ('titulo', 'prazoInicio', 'prazoFim')
     list_filter = ('titulo',)
     ordering = ('titulo', 'prazoInicio', 'prazoFim')
+    list_per_page = 10
+
+
+@admin.register(Comentario)
+class ComentarioAdmin(admin.ModelAdmin):
+    list_display = ('user', 'tarefa',)
+    search_fields = ('user', 'tarefa',)
+    list_filter = ('user', 'tarefa')
+    ordering = ('user', 'tarefa',)
     list_per_page = 10

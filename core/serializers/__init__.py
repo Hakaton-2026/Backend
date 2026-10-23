@@ -7,3 +7,4 @@ from .user import (
     VerifyEmailSerializer
 )
 from .tarefa import TarefaSerializer
+from .comentario import ComentarioSerializer

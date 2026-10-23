@@ -8,4 +8,10 @@ from .user import (
 )
 from .tarefa import TarefaCreateUpdateSerializer, TarefaListSerializer, TarefaRetrieveSerializer
 from .comentario import ComentarioSerializer
-from .projeto import ProjetoCreateUpdateSerializer, ProjetoListSerializer, ProjetoRetrieveSerializer
+from .projeto import (
+    ProjetoCreateUpdateSerializer,
+    ProjetoListSerializer,
+    ProjetoMembroSerializer,
+    ProjetoRetrieveSerializer,
+    ProjetoUsuarioSerializer,
+)

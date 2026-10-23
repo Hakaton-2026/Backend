@@ -31,6 +31,8 @@ router.register(r'projetos', ProjetoViewSet, basename='projetos')
 
 
 urlpatterns = [
+    path('accounts/', include('allauth.urls')),
+
     path('admin/', admin.site.urls),
 
     # OpenAPI

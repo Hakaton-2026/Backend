@@ -10,20 +10,22 @@ from drf_spectacular.views import (
 from rest_framework.routers import DefaultRouter
 
 from core.views import (
+    ComentarioViewSet,
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
     CustomTokenVerifyView,
     ResendVerificationCodeView,
+    TarefaViewSet,
     UserRegistrationView,
     UserViewSet,
     VerifyEmailView,
 )
-from core.views.tarefa import TarefaViewSet
 from uploader.router import router as uploader_router
 
 router = DefaultRouter()
 router.register(r'usuarios', UserViewSet, basename='usuarios')
 router.register(r'tarefas', TarefaViewSet, basename='tarefas')
+router.register(r'comentarios', ComentarioViewSet, basename='comentarios')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

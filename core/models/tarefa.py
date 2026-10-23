@@ -21,3 +21,6 @@ class Tarefa(models.Model):
     texto = models.CharField(max_length=500, null=True, blank=True)
 
     user = models.ForeignKey(User, related_name='user', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.titulo

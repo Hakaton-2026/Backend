@@ -8,4 +8,4 @@ from .user import (
 )
 from .tarefa import TarefaSerializer
 from .comentario import ComentarioSerializer
-from .projeto import ProjetoSerializer
+from .projeto import ProjetoCreateUpdateSerializer, ProjetoListSerializer, ProjetoRetrieveSerializer

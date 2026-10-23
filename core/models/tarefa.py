@@ -1,6 +1,7 @@
 from django.db import models
 
-from core.models.user import User
+from .projeto import Projeto
+from .user import User
 
 
 class Tarefa(models.Model):
@@ -31,7 +32,9 @@ class Tarefa(models.Model):
     prazoFim = models.DateField()
     texto = models.CharField(max_length=500, null=True, blank=True)
 
-    user = models.ForeignKey(User, related_name='user', on_delete=models.PROTECT)
+    user = models.ForeignKey(User, related_name='tarefas', on_delete=models.PROTECT)
+
+    projeto = models.ForeignKey(Projeto, related_name='tarefas', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.titulo

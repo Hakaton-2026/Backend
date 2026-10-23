@@ -186,6 +186,11 @@ class ComentarioAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
+class TarefasInline(admin.TabularInline):
+    model = Tarefa
+    extra = 1
+
+
 @admin.register(Projeto)
 class ProjetoAdmin(admin.ModelAdmin):
     list_display = ('nome',)
@@ -193,3 +198,4 @@ class ProjetoAdmin(admin.ModelAdmin):
     list_filter = ('nome',)
     ordering = ('nome',)
     list_per_page = 10
+    inlines = [TarefasInline]

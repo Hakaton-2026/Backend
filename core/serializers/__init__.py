@@ -6,6 +6,6 @@ from .user import (
     UserSerializer,
     VerifyEmailSerializer
 )
-from .tarefa import TarefaSerializer
+from .tarefa import TarefaCreateUpdateSerializer, TarefaListSerializer, TarefaRetrieveSerializer
 from .comentario import ComentarioSerializer
 from .projeto import ProjetoCreateUpdateSerializer, ProjetoListSerializer, ProjetoRetrieveSerializer

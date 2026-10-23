@@ -30,7 +30,7 @@ MAX_VERIFICATION_ATTEMPTS = 5
 
 
 class UserViewSet(ModelViewSet):
-    queryset = User.objects.all().order_by('id')
+    queryset = User.objects.all().order_by('-id').order_by('id')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
@@ -142,7 +142,7 @@ class UserViewSet(ModelViewSet):
 class UserRegistrationView(CreateAPIView):
     """Registra uma conta e inicia a verificação do e-mail."""
 
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('-id')
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 

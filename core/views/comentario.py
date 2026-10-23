@@ -5,5 +5,5 @@ from core.serializers import ComentarioSerializer
 
 
 class ComentarioViewSet(ModelViewSet):
-    queryset = Comentario.objects.all()
+    queryset = Comentario.objects.all().order_by('-id')
     serializer_class = ComentarioSerializer

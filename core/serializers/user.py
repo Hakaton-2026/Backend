@@ -34,7 +34,7 @@ class UserSerializer(ModelSerializer):
 
     profile_photo_attachment_key = SlugRelatedField(
         source='profile_photo',
-        queryset=Image.objects.all(),
+        queryset=Image.objects.all().order_by('-id'),
         slug_field='attachment_key',
         required=False,
         write_only=True,

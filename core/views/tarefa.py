@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet
 
 from core.models import Tarefa
@@ -13,3 +14,6 @@ class TarefaViewSet(ModelViewSet):
         if self.action == 'list':
             return TarefaListSerializer
         return TarefaRetrieveSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['titulo', 'situacao', 'prioridade', 'prazoInicio', 'prazoFim', 'user__email']

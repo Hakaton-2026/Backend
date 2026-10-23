@@ -2,11 +2,11 @@ from django.db import transaction
 from rest_framework.serializers import ModelSerializer
 
 from core.models import Projeto, Tarefa
-from core.serializers import TarefaSerializer
+from core.serializers import TarefaCreateUpdateSerializer, TarefaListSerializer
 
 
 class ProjetoCreateUpdateSerializer(ModelSerializer):
-    tarefas = TarefaSerializer(many=True, required=False)
+    tarefas = TarefaCreateUpdateSerializer(many=True, required=False)
     class Meta:
         model = Projeto
         fields = ('id', 'nome', 'descricao', 'tarefas',)
@@ -22,14 +22,14 @@ class ProjetoCreateUpdateSerializer(ModelSerializer):
 
 
 class ProjetoListSerializer(ModelSerializer):
-    tarefas = TarefaSerializer(many=True, read_only=True)
+    tarefas = TarefaListSerializer(many=True, read_only=True)
     class Meta:
         model = Projeto
         fields = ('id', 'nome', 'descricao', 'tarefas',)
 
 
 class ProjetoRetrieveSerializer(ModelSerializer):
-    tarefas = TarefaSerializer(many=True, read_only=True)
+    tarefas = TarefaListSerializer(many=True, read_only=True)
     class Meta:
         model = Projeto
         fields = ('id', 'nome', 'descricao', 'tarefas',)

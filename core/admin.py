@@ -168,6 +168,11 @@ class UserAdmin(BaseUserAdmin):
         )
 
 
+class ComentariosInline(admin.TabularInline):
+    model = Comentario
+    extra = 1
+
+
 @admin.register(Tarefa)
 class TarefasAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'prazoInicio', 'prazoFim')
@@ -175,6 +180,7 @@ class TarefasAdmin(admin.ModelAdmin):
     list_filter = ('titulo',)
     ordering = ('titulo', 'prazoInicio', 'prazoFim')
     list_per_page = 10
+    inlines = [ComentariosInline]
 
 
 @admin.register(Comentario)

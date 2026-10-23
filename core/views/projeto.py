@@ -5,7 +5,7 @@ from core.serializers import ProjetoCreateUpdateSerializer, ProjetoListSerialize
 
 
 class ProjetoViewSet(ModelViewSet):
-    queryset = Projeto.objects.all()
+    queryset = Projeto.objects.all().order_by('-id')
 
     def get_serializer_class(self):
         if self.action in {'create', 'update', 'self.partial_update'}:

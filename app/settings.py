@@ -1,3 +1,4 @@
+
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -47,10 +48,6 @@ CORS_ALLOW_CREDENTIALS = True
 # ============================================================
 # Configurações de e-mail
 # ============================================================
-
-# Em desenvolvimento, imprime os e-mails no terminal.
-# Em produção, utiliza SMTP por padrão.
-# A variável EMAIL_BACKEND pode sobrescrever essa configuração.
 
 EMAIL_BACKEND = os.getenv(
     'EMAIL_BACKEND',
@@ -162,6 +159,12 @@ DATABASES = {
         conn_health_checks=True,
     )
 }
+
+# Evita falhas de cursores durante dumpdata quando o PostgreSQL
+# utiliza um pooler que não mantém cursores entre transações.
+# No SQLite, esta configuração não é aplicada.
+if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
 
 # ============================================================
 # Validação de senhas

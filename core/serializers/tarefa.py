@@ -1,16 +1,30 @@
+
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from core.models import Tarefa
+from core.models import Projeto, Tarefa
 
 from .comentario import ComentarioSerializer
 
 
 class TarefaCreateUpdateSerializer(ModelSerializer):
-    comentarios = ComentarioSerializer(many=True)
+    id = serializers.IntegerField(required=False, read_only=True)
+
+    projeto = serializers.PrimaryKeyRelatedField(
+        queryset=Projeto.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+
+    comentarios = ComentarioSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Tarefa
         fields = (
+            'id',
             'titulo',
             'descricao',
             'situacao',
@@ -19,14 +33,18 @@ class TarefaCreateUpdateSerializer(ModelSerializer):
             'prazoFim',
             'texto',
             'user',
-            'comentarios'
+            'projeto',
+            'comentarios',
         )
 
 
 class TarefaListSerializer(ModelSerializer):
+    projeto = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Tarefa
         fields = (
+            'id',
             'titulo',
             'descricao',
             'situacao',
@@ -35,15 +53,18 @@ class TarefaListSerializer(ModelSerializer):
             'prazoFim',
             'texto',
             'user',
+            'projeto',
         )
 
 
 class TarefaRetrieveSerializer(ModelSerializer):
     comentarios = ComentarioSerializer(many=True, read_only=True)
+    projeto = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Tarefa
         fields = (
+            'id',
             'titulo',
             'descricao',
             'situacao',
@@ -52,5 +73,6 @@ class TarefaRetrieveSerializer(ModelSerializer):
             'prazoFim',
             'texto',
             'user',
+            'projeto',
             'comentarios',
         )

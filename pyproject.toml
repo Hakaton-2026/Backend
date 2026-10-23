@@ -1,3 +1,4 @@
+
 [project]
 name = "livraria"
 version = "1.0.0"
@@ -45,8 +46,8 @@ post_migrate = "python manage.py graph_models --disable-sort-fields -S -g -o cor
 shell = "python manage.py shell"
 shellp = "python manage.py shell_plus"
 test = "python manage.py test"
-loaddata = "python manage.py loaddata core.json"
-dumpdata = "python manage.py dumpdata --indent 2"
+loaddata = "python manage.py loaddata {args}"
+dumpdata = "python manage.py dumpdata --indent 2 {args}"
 cria_api = "python ./scripts/cria_api.py {args}"
 check = "ruff check"
 pre_format = "ruff check --fix"

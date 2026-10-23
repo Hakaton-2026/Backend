@@ -40,7 +40,7 @@ FRONTEND_URLS = [
     url.strip()
     for url in os.getenv(
         'FRONTEND_URLS',
-        'http://localhost:5173,http://127.0.0.1:5173'
+        'http://localhost:5173,http://127.0.0.1:5173',
     ).split(',')
     if url.strip()
 ]
@@ -73,13 +73,11 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SITE_ID = 1
 
-# O model User não tem campo "username": login por e-mail
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email'
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
-# Login social: usa o e-mail verificado pelo Google
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
@@ -87,6 +85,46 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+# ============================================================
+# Configurações de e-mail
+# ============================================================
+
+# Em desenvolvimento, imprime os e-mails no terminal.
+# Em produção, utiliza SMTP por padrão.
+# A variável EMAIL_BACKEND pode sobrescrever essa configuração.
+
+EMAIL_BACKEND = os.getenv(
+    'EMAIL_BACKEND',
+    (
+        'django.core.mail.backends.console.EmailBackend'
+        if DEBUG
+        else 'django.core.mail.backends.smtp.EmailBackend'
+    ),
+)
+
+EMAIL_HOST = os.getenv('EMAIL_HOST', '')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+
+EMAIL_USE_TLS = os.getenv(
+    'EMAIL_USE_TLS',
+    'True',
+).lower() in {'1', 'true', 'yes', 'on'}
+
+EMAIL_USE_SSL = os.getenv(
+    'EMAIL_USE_SSL',
+    'False',
+).lower() in {'1', 'true', 'yes', 'on'}
+
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+
+DEFAULT_FROM_EMAIL = os.getenv(
+    'DEFAULT_FROM_EMAIL',
+    EMAIL_HOST_USER or 'noreply@localhost',
+)
+
+EMAIL_TIMEOUT = int(os.getenv('EMAIL_TIMEOUT', '20'))
 
 # ============================================================
 # Aplicações instaladas
@@ -116,6 +154,7 @@ INSTALLED_APPS = [
     'anymail',
 
     # Aplicações do projeto
+    'uploader',
     'core',
 ]
 
@@ -228,9 +267,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_ENDPOINT = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_URL = 'http://127.0.0.1:8000/media/'
-
 FILE_UPLOAD_PERMISSIONS = 0o640
+
+# Endereço utilizado durante o desenvolvimento.
+MEDIA_URL = 'http://127.0.0.1:8000/media/'
 
 # ============================================================
 # Cloudinary (opcional)
@@ -314,25 +354,7 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# ============================================================
-# E-mails com Resend
-# ============================================================
-
-ANYMAIL = {
-    'RESEND_API_KEY': os.getenv('RESEND_API_KEY'),
-}
-
-EMAIL_BACKEND = 'anymail.backends.resend.EmailBackend'
-DEFAULT_FROM_EMAIL = 'Meu Kanban <onboarding@resend.dev>'
-
-# Para imprimir os e-mails no terminal durante o desenvolvimento,
-# descomente o bloco abaixo:
-
-# if DEBUG:
-#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# ============================================================
-# Informações de configuração (debug)
+# Informações básicas da configuração
 # ============================================================
 
 print('=' * 70)
@@ -342,7 +364,6 @@ print(f'DEBUG....................: {DEBUG}')
 print(f'SECRET_KEY...............: {"DEFINIDA" if SECRET_KEY else "NÃO DEFINIDA"}')
 
 print()
-
 print(f'DATABASE ENGINE..........: {DATABASES["default"]["ENGINE"]}')
 print(f'DATABASE NAME............: {DATABASES["default"]["NAME"]}')
 
@@ -363,7 +384,6 @@ print()
 print(f'CLOUDINARY...............: {"SIM" if CLOUDINARY_URL else "NÃO"}')
 print(f'GOOGLE_CLIENT_ID.........: {"DEFINIDO" if GOOGLE_CLIENT_ID else "NÃO DEFINIDO"}')
 print(f'GOOGLE_CLIENT_SECRET.....: {"DEFINIDO" if GOOGLE_CLIENT_SECRET else "NÃO DEFINIDO"}')
-print(f'RESEND_API_KEY...........: {"DEFINIDA" if os.getenv("RESEND_API_KEY") else "NÃO DEFINIDA"}')
 print(f'EMAIL_BACKEND............: {EMAIL_BACKEND}')
 
 print('=' * 70)

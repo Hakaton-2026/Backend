@@ -18,7 +18,6 @@ dependencies = [
   'Pillow>=10.3.0',
   'pre-commit>=3.5.0',
   'psycopg2-binary>=2.9.9',
-  'pydotplus>=2.0.2',
   'python-dotenv>=1.0.0',
   'python-magic-bin>=0.4.14; sys_platform == "win32"',
   'python-magic>=0.4.27; sys_platform == "linux"',
@@ -29,6 +28,7 @@ dependencies = [
   "google-auth>=2.62.0",
   "requests>=2.34.2",
   "django-allauth>=65.19.7",
+  "pydot>=4.0.1",
 ]
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -45,7 +45,7 @@ dev = "python manage.py runserver 127.0.0.1:8000"
 createsuperuser = "python manage.py createsuperuser"
 pre_migrate = "python manage.py makemigrations"
 migrate = "python manage.py migrate"
-post_migrate = "python manage.py graph_models -S -g -o core.png core"
+post_migrate = "python manage.py graph_models --disable-sort-fields -S -g -o core.png core uploader"
 shell = "python manage.py shell"
 shellp = "python manage.py shell_plus"
 test = "python manage.py test"

@@ -22,6 +22,7 @@ from core.views import (
     VerifyEmailView,
 )
 from uploader.router import router as uploader_router
+from core.views.drive import DriveDownloadView, DriveListView
 
 router = DefaultRouter()
 router.register(r'usuarios', UserViewSet, basename='usuarios')
@@ -82,6 +83,10 @@ urlpatterns = [
         ResendVerificationCodeView.as_view(),
         name='resend_code',
     ),
+
+    # Google Drive
+    path('api/drive/', DriveListView.as_view(), name='drive-list'),
+    path('api/drive/<str:arquivo_id>/', DriveDownloadView.as_view(), name='drive-download'),
 
     # Rotas de usuário
     path('api/', include(router.urls)),

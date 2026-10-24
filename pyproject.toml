@@ -29,6 +29,7 @@ dependencies = [
   "django-allauth[socialaccount]>=65.19.7",
   "google-auth>=2.62.0",
   "google-api-python-client>=2.201.0",
+  "requests>=2.34.2",
 ]
 requires-python = ">=3.10"
 license = { text = "MIT" }

@@ -21,6 +21,7 @@ from core.views import (
     UserRegistrationView,
     UserViewSet,
     VerifyEmailView,
+    GoogleLoginView,
 )
 from core.views.drive import DriveDownloadView, DriveListView
 from uploader.router import router as uploader_router
@@ -67,6 +68,10 @@ urlpatterns = [
         CustomTokenObtainPairView.as_view(),
         name='token_obtain_pair',
     ),
+
+    path('api/auth/google/', GoogleLoginView.as_view(), name='google_login'),
+
+    
     path(
         'api/token/refresh/',
         CustomTokenRefreshView.as_view(),

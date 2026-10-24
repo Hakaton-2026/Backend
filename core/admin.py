@@ -3,7 +3,16 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from core.models import Comentario, Nota, Projeto, Tarefa, User
+from core.models import (
+    ChecklistItem,
+    Comentario,
+    MaterialApoio,
+    Nota,
+    Projeto,
+    ProjetoMembro,
+    Tarefa,
+    User,
+)
 
 
 @admin.register(User)
@@ -173,6 +182,17 @@ class ComentariosInline(admin.TabularInline):
     extra = 1
 
 
+class ChecklistInline(admin.TabularInline):
+    model = ChecklistItem
+    extra = 1
+
+
+class MateriaisTarefaInline(admin.TabularInline):
+    model = MaterialApoio
+    fk_name = 'tarefa'
+    extra = 0
+
+
 @admin.register(Tarefa)
 class TarefasAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'prazoInicio', 'prazoFim')
@@ -180,7 +200,7 @@ class TarefasAdmin(admin.ModelAdmin):
     list_filter = ('titulo',)
     ordering = ('titulo', 'prazoInicio', 'prazoFim')
     list_per_page = 10
-    inlines = [ComentariosInline]
+    inlines = [ChecklistInline, MateriaisTarefaInline, ComentariosInline]
 
 
 @admin.register(Comentario)
@@ -197,14 +217,25 @@ class TarefasInline(admin.TabularInline):
     extra = 1
 
 
+class MembrosInline(admin.TabularInline):
+    model = ProjetoMembro
+    extra = 1
+
+
+class MateriaisProjetoInline(admin.TabularInline):
+    model = MaterialApoio
+    fk_name = 'projeto'
+    extra = 0
+
+
 @admin.register(Projeto)
 class ProjetoAdmin(admin.ModelAdmin):
-    list_display = ('nome',)
+    list_display = ('nome', 'proprietario')
     search_fields = ('nome',)
     list_filter = ('nome',)
     ordering = ('nome',)
     list_per_page = 10
-    inlines = [TarefasInline]
+    inlines = [MembrosInline, MateriaisProjetoInline, TarefasInline]
 
 @admin.register(Nota)
 class NotaAdmin(admin.ModelAdmin):

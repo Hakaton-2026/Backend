@@ -51,6 +51,15 @@ class UserSerializer(ModelSerializer):
         return super().update(instance, validated_data)
 
 
+class UserResumoSerializer(ModelSerializer):
+    """Dados mínimos de um usuário para exibir autor, responsável ou membro."""
+
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'email']
+        read_only_fields = fields
+
+
 class UserRegistrationSerializer(ModelSerializer):
     password = serializers.CharField(
         write_only=True,

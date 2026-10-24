@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
 from core.models import Tarefa
@@ -21,5 +22,6 @@ class TarefaViewSet(ModelViewSet):
 
         return TarefaRetrieveSerializer
 
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['titulo', 'situacao', 'prioridade', 'prazoInicio', 'prazoFim', 'user__email']
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['situacao', 'prioridade', 'prazoInicio', 'prazoFim', 'user__email']
+    search_fields = ['titulo']

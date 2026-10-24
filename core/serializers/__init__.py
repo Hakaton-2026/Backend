@@ -3,11 +3,24 @@ from .user import (
     EmailVerifiedTokenObtainPairSerializer,
     ResendCodeSerializer,
     UserRegistrationSerializer,
+    UserResumoSerializer,
     UserSerializer,
     VerifyEmailSerializer
 )
 
-from .tarefa import TarefaCreateUpdateSerializer, TarefaListSerializer, TarefaRetrieveSerializer
 from .comentario import ComentarioSerializer
+from .checklist_item import ChecklistItemSerializer
+from .material_apoio import MaterialApoioSerializer
+from .tarefa import (
+    TarefaAninhadaSerializer,
+    TarefaCreateUpdateSerializer,
+    TarefaListSerializer,
+    TarefaRetrieveSerializer,
+)
 from .nota import NotaSerializer
-from .projeto import ProjetoCreateUpdateSerializer, ProjetoListSerializer, ProjetoRetrieveSerializer
+from .projeto import (
+    ProjetoCreateUpdateSerializer,
+    ProjetoListSerializer,
+    ProjetoMembroSerializer,
+    ProjetoRetrieveSerializer,
+)

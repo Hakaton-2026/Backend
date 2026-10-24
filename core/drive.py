@@ -9,7 +9,7 @@ from googleapiclient.http import MediaIoBaseDownload
 
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = Path(__file__).resolve().parents[1]
 
 # Arquivos nativos do Google não baixam direto: precisam ser exportados.
 EXPORT_MIME = {

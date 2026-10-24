@@ -21,6 +21,7 @@ from core.views import (
     UserViewSet,
     VerifyEmailView,
 )
+from core.views.drive import DriveDownloadView, DriveListView
 from uploader.router import router as uploader_router
 
 router = DefaultRouter()
@@ -50,6 +51,14 @@ urlpatterns = [
 
     # Upload de arquivos
     path('api/media/', include(uploader_router.urls)),
+
+    # Google Drive (somente leitura)
+    path('api/drive/', DriveListView.as_view(), name='drive_list'),
+    path(
+        'api/drive/<str:arquivo_id>/',
+        DriveDownloadView.as_view(),
+        name='drive_download',
+    ),
 
     # Autenticação JWT
     path(

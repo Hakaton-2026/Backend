@@ -1,5 +1,4 @@
-from rest_framework.views import ModelViewSet
-
+from rest_framework.viewsets import ModelViewSet
 from core.models import Nota
 from core.serializers import NotaSerializer
 

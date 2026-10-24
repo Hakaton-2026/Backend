@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.1"
-content_hash = "sha256:4f48f3f41d76e9422ad7f3c33fe9529f875efa88e36ac75b379762b3c6fa53e8"
+content_hash = "sha256:ea73d7a7eb3ee74753a91826f91d70a69db457c3292cdad0e76ecd61c893d559"
 
 [[metadata.targets]]
 requires_python = ">=3.10"
@@ -607,6 +607,24 @@ files = [
 ]
 
 [[package]]
+name = "django-allauth"
+version = "65.19.7"
+extras = ["socialaccount"]
+requires_python = ">=3.10"
+summary = "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication."
+groups = ["default"]
+dependencies = [
+    "django-allauth==65.19.7",
+    "oauthlib<5,>=4.0.0",
+    "pyjwt[crypto]<3,>=2.0",
+    "requests<3,>=2.0.0",
+]
+files = [
+    {file = "django_allauth-65.19.7-py3-none-any.whl", hash = "sha256:8899377f38afabf10445c9ee2f808a730304ca8aecc540657d51a8b3928283d6"},
+    {file = "django_allauth-65.19.7.tar.gz", hash = "sha256:c7749551b659ca954e483f6f634cd0c262d65dd8144f5219b3a31cba0426e981"},
+]
+
+[[package]]
 name = "django-cloudinary-storage"
 version = "0.3.0"
 summary = "Django package that provides Cloudinary storages for both media and static files as well as management commands for removing unnecessary files."
@@ -1067,6 +1085,17 @@ files = [
 ]
 
 [[package]]
+name = "oauthlib"
+version = "4.0.0"
+requires_python = ">=3.9"
+summary = "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
+groups = ["default"]
+files = [
+    {file = "oauthlib-4.0.0-py3-none-any.whl", hash = "sha256:624c28c13a0a59cabf9747dfa52af63be3e512a7f2714df16e91b5b3a145e6cd"},
+    {file = "oauthlib-4.0.0.tar.gz", hash = "sha256:efb274799819440f95b4ab3b818869f1ce9ae26c5beacba0201d1a1b76b54f86"},
+]
+
+[[package]]
 name = "opentelemetry-api"
 version = "1.45.1"
 requires_python = ">=3.10"
@@ -1453,6 +1482,22 @@ summary = "JSON Web Token implementation in Python"
 groups = ["default"]
 dependencies = [
     "typing-extensions>=4.0; python_version < \"3.11\"",
+]
+files = [
+    {file = "pyjwt-2.15.1-py3-none-any.whl", hash = "sha256:42d59d631f7768a1028a64c7ff581a9bf7519804daf91fc5b6c56e30eec5e193"},
+    {file = "pyjwt-2.15.1.tar.gz", hash = "sha256:4f259e80cdfb6b3fc18a7de51fd1ef9ec79652f25019bae68975ca2468a34df8"},
+]
+
+[[package]]
+name = "pyjwt"
+version = "2.15.1"
+extras = ["crypto"]
+requires_python = ">=3.9"
+summary = "JSON Web Token implementation in Python"
+groups = ["default"]
+dependencies = [
+    "cryptography>=3.4.0",
+    "pyjwt==2.15.1",
 ]
 files = [
     {file = "pyjwt-2.15.1-py3-none-any.whl", hash = "sha256:42d59d631f7768a1028a64c7ff581a9bf7519804daf91fc5b6c56e30eec5e193"},

@@ -7,3 +7,4 @@ class NotaSerializer(ModelSerializer):
     class Meta:
         model = Nota
         fields = '__all__'
+        read_only_fields = ['id', 'user']

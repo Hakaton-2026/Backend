@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from core.models import Comentario, Projeto, Tarefa, User
+from core.models import Comentario, Nota, Projeto, Tarefa, User
 
 
 @admin.register(User)

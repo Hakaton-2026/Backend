@@ -8,8 +8,21 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='nota',
-            name='projeto',
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql='''
+                        ALTER TABLE core_nota
+                        DROP COLUMN IF EXISTS projeto_id;
+                    ''',
+                    reverse_sql=migrations.RunSQL.noop,
+                ),
+            ],
+            state_operations=[
+                migrations.RemoveField(
+                    model_name='nota',
+                    name='projeto',
+                ),
+            ],
         ),
     ]

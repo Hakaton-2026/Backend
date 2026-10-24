@@ -3,3 +3,4 @@ from .user import ResendVerificationCodeView, UserRegistrationView, UserViewSet,
 from .tarefa import TarefaViewSet
 from .comentario import ComentarioViewSet
 from .projeto import ProjetoViewSet
+from .nota import NotaViewSet

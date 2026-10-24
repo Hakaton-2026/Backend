@@ -9,3 +9,6 @@ class Nota(models.Model):
 
     user = models.ForeignKey(User, related_name='nota', on_delete=models.PROTECT)
     projeto = models.ForeignKey(Projeto, related_name='nota', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.titulo
